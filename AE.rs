@@ -1,3 +1,4 @@
+use std::env;
 use std::io;
 #[derive(Debug)]
 enum AE{
@@ -106,7 +107,7 @@ fn parse (s : String) -> AE{
 
 	subst_index(&s, &mut ind_instance);
 	let (subs_lhs, subs_rhs) = substring(&mut ind_instance, &s);
-	
+	println!("{}   {}" , subs_lhs, subs_rhs);	
 	match ind_instance.oper {
 		' ' =>AE::num(subs_lhs.parse::<f32>().unwrap() ),
 		'+' =>AE::add( Box::new(parse(subs_lhs)), Box::new(parse(subs_rhs))),
@@ -128,14 +129,24 @@ fn interp(ae : AE) ->f32{
 	}
 }
 fn main() {
-
+		let mut parse_flag = 0;
+		let option : Vec<String> =  env::args().collect();
+		if option.len()>2&& option[1].eq("-p"){
+				parse_flag = 1;
+		}
 		while(true){
 			let mut inn :String = String::new();
 			io::stdin().read_line(&mut inn)
 			        .expect("Failed to read line");
+
 			let a = parse(String::from(inn));
-	
-			println!("{}", interp(a));
+			if parse_flag ==0{
+					println!("{}", interp(a));
+			}
+			else{
+					
+					println!("{:?}", a);
+				}
 		}
 
 }
